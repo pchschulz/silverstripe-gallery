@@ -1,0 +1,9 @@
+---
+Name: silverstripe-gallery
+Before:
+  - 'mysite/\*'
+---
+PaulSchulz\SilverStripe\Gallery\Views\ImageLine:
+  optimized_width: 1920
+  desired_height: 200
+---

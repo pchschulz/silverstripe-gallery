@@ -1,0 +1,9 @@
+---
+Name: extensions
+Before:
+  - 'mysite/\*'
+---
+PaulSchulz\SilverStripe\Gallery\Pages\GalleryPage:
+  extensions:
+    - 'PaulSchulz\SilverStripe\Gallery\Extensions\GalleryExtension'
+---

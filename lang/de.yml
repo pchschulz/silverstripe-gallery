@@ -1,0 +1,30 @@
+de:
+  PaulSchulz\SilverStripe\Gallery\Pages\GalleryHolder:
+    SINGULARNAME: 'Galerieübersicht'
+    PLURALNAME: 'Galerieübersichten'
+    PLURALS:
+      one: 'Eine Galerieübersicht'
+      other: '{count} Galerieübersichten'
+    DESCRIPTION: 'Ein Übersichtsseite für alle untergeordneten Galerien'
+    SHOW_GALLERY_TOOLTIP: 'Zur Galerieseite'
+  PaulSchulz\SilverStripe\Gallery\Pages\GalleryPage:
+    SINGULARNAME: 'Galerieseite'
+    PLURALNAME: 'Galerieseiten'
+    PLURALS:
+      one: 'Eine Galerieseite'
+      other: '{count} Galerieseiten'
+    DESCRIPTION: 'Eine Seite in der Bilder in schöner Form angezeigt werden'
+    GALLERY_TAB: 'Galerie'
+  PaulSchulz\SilverStripe\Gallery\Extensions\ImageCollectionExtension:
+    db_BiasMode: 'Größenveränderungsmodus'
+    many_many_Images: 'Bilder'
+    BIAS_MODE_EXPLANATION: 'Der Größenveränderungsmodus legt fest wie die Abweichung von der gewollten Zeilenhöhe bestimmt wird.'
+    BIAS_MODE_EXPLANATION_AVG: 'Der Durschnitt der Abweichungen aller Zeilen (Die Zeilen sind meistens näher an der gewünschten Höhe. Meistens die bessere Wahl.)'
+    BIAS_MODE_EXPLANATION_MAX: 'Die Maximale Abweichung aller Zeilen (Verhindert zu große Zeilen)'
+  PaulSchulz\SilverStripe\Gallery\Extensions\GalleryExtension:
+    db_Title: 'Titel'
+    db_Date: 'Datum'
+    db_Location: 'Ort'
+    db_Content: 'Inhalt'
+  PaulSchulz\SilverStripe\Gallery\Models\GalleryImage:
+      TOOLTIP: 'Bild anzeigen'

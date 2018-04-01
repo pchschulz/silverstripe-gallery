@@ -1,0 +1,10 @@
+{
+  "name": "pchschulz/silverstripe-gallery",
+  "type": "silverstripe-vendormodule",
+  "require": {
+    "php": ">=7.0",
+    "silverstripe/recipe-core": "^1.1",
+    "silverstripe/cms": "^4.1",
+    "bummzack/sortablefile": "^2.0"
+  }
+}
