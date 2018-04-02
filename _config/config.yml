@@ -6,4 +6,6 @@ Before:
 PaulSchulz\SilverStripe\Gallery\Views\ImageLine:
   optimized_width: 1920
   desired_height: 200
+PaulSchulz\SilverStripe\Gallery\Models\GalleryImage:
+  margin: 10
 ---

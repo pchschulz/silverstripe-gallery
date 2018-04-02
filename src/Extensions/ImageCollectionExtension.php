@@ -69,16 +69,17 @@ class ImageCollectionExtension extends DataExtension {
      *  - avg (This keeps attention on the average difference to the desired height)
      *  - max (This searches for the maximum difference to the desired height of a line and takes this to find the best order. This mode better prevents very large lines.)
      * @param SS_List $images
+     * @param bool $firstCall
      * @return ImageLineCollection
      */
-    public function findBestImageOrder(SS_List $images) : ImageLineCollection {
+    public function findBestImageOrder(SS_List $images, bool $firstCall = true) : ImageLineCollection {
         //if list is empty return an empty ImageLineCollection
         if ($images->count() === 0) {
             return new ImageLineCollection(new ArrayList(), $this->owner->BiasMode);
         }
 
         //an ImageLine object is created and is filled with images until it is full (hasEnoughSpace() return false)
-        $line = new ImageLine();
+        $line = new ImageLine($firstCall);
         foreach ($images as $image) {
             /** @var GalleryImage $image */
             if (!$line->hasEnoughSpace($image)) {
@@ -111,7 +112,7 @@ class ImageCollectionExtension extends DataExtension {
             $nextImage = clone $images->first();
 
             //recursive calculation with next image in next line
-            $resultOne = $this->owner->findBestImageOrder($clonedImages);
+            $resultOne = $this->owner->findBestImageOrder($clonedImages, false);
             $line->match();
 
             //clone the current line and put the next image in this line, too
@@ -124,7 +125,7 @@ class ImageCollectionExtension extends DataExtension {
             }
             else {
                 //recursive calculation with next image in the current line and merge the results with the calculations of the current line
-                $resultTwo = $this->owner->findBestImageOrder($images);
+                $resultTwo = $this->owner->findBestImageOrder($images, false);
                 $resultTwo->addLine($secondLine, true);
             }
 

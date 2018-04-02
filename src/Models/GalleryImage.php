@@ -2,6 +2,7 @@
 
 namespace PaulSchulz\SilverStripe\Gallery\Models;
 
+use PaulSchulz\SilverStripe\Gallery\Views\ImageLine;
 use SilverStripe\Assets\Image;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 
@@ -20,6 +21,25 @@ class GalleryImage extends Image {
      * @var float
      */
     protected $percentageWidth;
+
+    /**
+     * @var bool
+     */
+    protected $hasMarginTop = true;
+
+    /**
+     * @var bool
+     */
+    protected $hasMarginRight = true;
+
+    /**
+     * Returns the margin of an image. The margin is applied on the top and at the right of the image.
+     * This margin can be set in config.yml.
+     * @return int
+     */
+    public static function getMargin() : int {
+        return self::config()->get('margin');
+    }
 
     /**
      * Sets the width of this image in percentage of the line, which contains this image.
@@ -61,6 +81,42 @@ class GalleryImage extends Image {
     }
 
     /**
+     * Sets the value of $this->addMarginTop.
+     * This is necessary to determine if the margin should be added to the top of the image in the template.
+     * @param bool $hasMarginTop
+     */
+    public function setHasMarginTop(bool $hasMarginTop) {
+        $this->hasMarginTop = $hasMarginTop;
+    }
+
+    /**
+     * Sets the value of $this->addMarginRight.
+     * This is necessary to determine if the margin should be added to the right of the image in the template.
+     * @param bool $hasMarginRight
+     */
+    public function setHasMarginRight(bool $hasMarginRight) {
+        $this->hasMarginRight = $hasMarginRight;
+    }
+
+    /**
+     * Returns the value $this->addMarginTop.
+     * This is necessary to determine if the margin should be added to the top of the image in the template.
+     * @return bool
+     */
+    public function HasMarginTop(): bool {
+        return $this->hasMarginTop;
+    }
+
+    /**
+     * Sets the value of $this->addMarginRight.
+     * This is necessary to determine if the margin should be added to the right of the image in the template.
+     * @return bool
+     */
+    public function HasMarginRight(): bool {
+        return $this->hasMarginRight;
+    }
+
+    /**
      * Scales this image dimensions about the factor $scale.
      * @param float $scale
      */
@@ -95,6 +151,14 @@ class GalleryImage extends Image {
      */
     public function getPercentageWidth(): float {
         return $this->percentageWidth;
+    }
+
+    /**
+     * Returns the margin of this image of percent of the width of one image line.
+     * @return float
+     */
+    public static function getPercentageMargin() : float {
+        return static::getMargin() / ImageLine::getOptimizedWidth() * 100;
     }
 
     /**

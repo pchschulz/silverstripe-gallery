@@ -17,10 +17,17 @@ class ImageLine extends ViewableData {
     private $images;
 
     /**
-     * ImageLine constructor.
+     * @var bool
      */
-    public function __construct() {
+    private $firstLine;
+
+    /**
+     * ImageLine constructor.
+     * @param bool $firstLine
+     */
+    public function __construct(bool $firstLine = false) {
         $this->images = new ArrayList();
+        $this->firstLine = $firstLine;
     }
 
     /**
@@ -56,7 +63,7 @@ class ImageLine extends ViewableData {
      * @return bool
      */
     public function hasEnoughSpace(GalleryImage $image) : bool {
-        return $this->isEmpty() || $this->getWidth() + $image->getScaledWidth() <= static::getOptimizedWidth();
+        return $this->isEmpty() || $this->getWidth() + GalleryImage::getMargin() + $image->getScaledWidth() <= static::getOptimizedWidth();
     }
 
     /**
@@ -68,11 +75,10 @@ class ImageLine extends ViewableData {
     }
 
     /**
-     * Returns the current width of this line, calculated by add up the width of all images of this line.
-     * This is not the width specified in the config.yml.
+     * Returns the current width of this line without margin, calculated by add up the width and the margin of all images of this line.
      * @return float
      */
-    public function getWidth() : float {
+    public function getWidthWithoutMargin() : float {
         $width = 0;
         foreach ($this->images as $image) {
             /** @var GalleryImage $image */
@@ -83,10 +89,19 @@ class ImageLine extends ViewableData {
     }
 
     /**
+     * Returns the current width of this line, calculated by add up the width and the margin of all images of this line.
+     * This is not the width specified in the config.yml.
+     * @return float
+     */
+    public function getWidth() : float {
+        return $this->getWidthWithoutMargin() + $this->getAllImagesRightMargin();
+    }
+
+    /**
      * Returns the height of this line, calculated by searching for the highest image.
      * @return float
      */
-    public function getHeight() : float {
+    public function getHeightWithoutMargin() : float {
         $height = 0;
         foreach ($this->images as $image) {
             /** @var GalleryImage $image */
@@ -99,12 +114,39 @@ class ImageLine extends ViewableData {
     }
 
     /**
+     * Returns the height of this line, calculated by searching for the highest image.
+     * This line height includes the margin, if any.
+     * @return float
+     */
+    public function getHeight() : float {
+        $height = $this->getHeightWithoutMargin();
+
+        if (!$this->firstLine) {
+            $height += GalleryImage::getMargin();
+        }
+
+        return $height;
+    }
+
+    /**
+     * Returns the sum of the margins of all images of this line.
+     * @return int
+     */
+    public function getAllImagesRightMargin() : int {
+        if ($this->images->count() === 0) {
+            return 0;
+        }
+
+        return ($this->images->count() - 1) * GalleryImage::getMargin();
+    }
+
+    /**
      * Match the images to the line, so that the complete space of the line is used and the height of all images is equal afterwards.
      * The space is specified by $this->getOptimizedWidth().
      * @see getOptimizedWidth()
      */
     public function match() {
-        $resizeFactor = $this->getWidth() / static::getOptimizedWidth();
+        $resizeFactor = $this->getWidthWithoutMargin() / (static::getOptimizedWidth() - $this->getAllImagesRightMargin());
         foreach ($this->images as $image) {
             /** @var GalleryImage $image */
             $image->scale($resizeFactor);
@@ -117,7 +159,7 @@ class ImageLine extends ViewableData {
      * @return float
      */
     public function getBiasFromDesiredHeight() : float {
-        return abs($this->getHeight() - static::getDesiredHeight());
+        return abs($this->getHeightWithoutMargin() - static::getDesiredHeight());
     }
 
     /**
@@ -145,6 +187,7 @@ class ImageLine extends ViewableData {
     /**
      * This function is called when this object should be rendered to a template.
      * Additionally this function calculates the width of the images of this line in percent for responsive purposes.
+     * This function also determines if the images of this line should have margin at the top or not.
      * @return \SilverStripe\ORM\FieldType\DBHTMLText
      */
     public function forTemplate() {
@@ -153,6 +196,12 @@ class ImageLine extends ViewableData {
         foreach ($this->images as $image) {
             /** @var GalleryImage $image */
             $image->setPercentageWidth($image->getScaledWidth() / $width * 100);
+            $image->setHasMarginTop(!$this->firstLine);
+        }
+
+        if ($lastImage = $this->images->last()) {
+            /** @var GalleryImage $lastImage */
+            $lastImage->setHasMarginRight(false);
         }
 
         return $this->renderWith(self::class);
