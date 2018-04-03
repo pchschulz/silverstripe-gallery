@@ -6,5 +6,10 @@
     "silverstripe/recipe-core": "^1.1",
     "silverstripe/cms": "^4.1",
     "bummzack/sortablefile": "^2.0"
+  },
+  "extra": {
+    "expose": [
+      "css/"
+    ]
   }
 }

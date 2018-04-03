@@ -1,0 +1,17 @@
+@import "../modules/all";
+
+.image-collection {
+  .image-line {
+    @extend %cf;
+
+    & > a {
+      display: block;
+      float: left;
+
+      & > img {
+        display: block;
+        width: 100%;
+      }
+    }
+  }
+}

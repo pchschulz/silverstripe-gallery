@@ -175,7 +175,7 @@ class ImageCollectionExtension extends DataExtension {
         return $this->owner->customise([
             'Hint' => _t(self::class . '.BIAS_MODE_EXPLANATION', 'The "Bias mode" determines how the deviation from the desired line height is determined.'),
             'Values' => $values,
-        ])->renderWith('PaulSchulz\SilverStripe\Gallery\Includes\BiasModeDescription');
+        ])->renderWith('PaulSchulz\SilverStripe\Gallery\Extensions\Includes\BiasModeDescription');
     }
 
     /**

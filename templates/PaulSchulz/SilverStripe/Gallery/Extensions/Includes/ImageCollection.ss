@@ -1,3 +1,4 @@
+<% require themedCSS('gallery') %>
 <% if $AdjustImages %>
     <section class="image-collection">
         $AdjustImages

@@ -1,0 +1,29 @@
+.galleries ul::after, .image-collection .image-line::after {
+  display: block;
+  content: "";
+  clear: both;
+  height: 0;
+  visibility: hidden; }
+
+.galleries ul li {
+  float: left;
+  width: 25%; }
+  .galleries ul li article a {
+    display: block; }
+    .galleries ul li article a img {
+      display: block;
+      width: 100%; }
+
+.galleries ul::after, .image-collection .image-line::after {
+  display: block;
+  content: "";
+  clear: both;
+  height: 0;
+  visibility: hidden; }
+
+.image-collection .image-line > a {
+  display: block;
+  float: left; }
+  .image-collection .image-line > a > img {
+    display: block;
+    width: 100%; }

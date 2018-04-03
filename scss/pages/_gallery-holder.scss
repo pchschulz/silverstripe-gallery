@@ -1,0 +1,23 @@
+@import "../modules/all";
+
+.galleries {
+  ul {
+    @extend %cf;
+
+    li {
+      float: left;
+      width: 25%;
+
+      article {
+        a {
+          display: block;
+
+          img {
+            display: block;
+            width: 100%;
+          }
+        }
+      }
+    }
+  }
+}
