@@ -146,7 +146,7 @@ class ImageLine extends ViewableData {
      * @see getOptimizedWidth()
      */
     public function match() {
-        $resizeFactor = $this->getWidthWithoutMargin() / (static::getOptimizedWidth() - $this->getAllImagesRightMargin());
+        $resizeFactor = (static::getOptimizedWidth() - $this->getAllImagesRightMargin()) / $this->getWidthWithoutMargin();
         foreach ($this->images as $image) {
             /** @var GalleryImage $image */
             $image->scale($resizeFactor);
