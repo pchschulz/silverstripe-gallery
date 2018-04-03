@@ -1,6 +1,12 @@
 {
   "name": "pchschulz/silverstripe-gallery",
   "type": "silverstripe-vendormodule",
+  "description": "This module provides the possibility to easily add a gallery to each DataObject. This module also provides a finished gallery page.",
+  "keywords": [
+    "silverstripe",
+    "gallery",
+    "images"
+  ],
   "require": {
     "php": ">=7.0",
     "silverstripe/recipe-core": "^1.1",
