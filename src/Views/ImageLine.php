@@ -2,6 +2,7 @@
 
 namespace PaulSchulz\SilverStripe\Gallery\Views;
 
+use PaulSchulz\SilverStripe\Gallery\Exceptions\InvalidConfigurationException;
 use PaulSchulz\SilverStripe\Gallery\Models\GalleryImage;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ViewableData;
@@ -33,19 +34,40 @@ class ImageLine extends ViewableData {
     /**
      * Returns the width a line should be optimized for.
      * This width can be specified in the config.yml.
+     * @throws InvalidConfigurationException
      * @return int
      */
     public static function getOptimizedWidth() : int {
-        return self::config()->get('optimized_width');
+        $optimizedWidth = self::config()->get('optimized_width');
+        if ($optimizedWidth <= 0) {
+            throw new InvalidConfigurationException('The optimized width must be greater or equal to 0.');
+        }
+        if ($optimizedWidth < GalleryImage::getMargin()) {
+            throw new InvalidConfigurationException('The optimized width must be greater or equal to the configured margin of a gallery image.');
+        }
+        if ((int) $optimizedWidth != $optimizedWidth) {
+            throw new InvalidConfigurationException('Decimals as a value for the optimized width are not allowed.');
+        }
+
+        return $optimizedWidth;
     }
 
     /**
      * Returns the desired height a line should have. This height can be slightly different through the calculation process.
      * This height can be specified in the config.yml.
+     * @throws InvalidConfigurationException
      * @return int
      */
     public static function getDesiredHeight() : int {
-        return self::config()->get('desired_height');
+        $desiredHeight = self::config()->get('desired_height');
+        if ($desiredHeight <= 0) {
+            throw new InvalidConfigurationException('The desired height must be greater or equal to 0.');
+        }
+        if ((int) $desiredHeight != $desiredHeight) {
+            throw new InvalidConfigurationException('Decimals as a value for the desired height are not allowed.');
+        }
+
+        return $desiredHeight;
     }
 
     /**
@@ -60,6 +82,7 @@ class ImageLine extends ViewableData {
      * Test if there is enough space for $image left in this image line.
      * This function always returns true if the line is empty.
      * @param GalleryImage $image
+     * @throws InvalidConfigurationException
      * @return bool
      */
     public function hasEnoughSpace(GalleryImage $image) : bool {
@@ -91,6 +114,7 @@ class ImageLine extends ViewableData {
     /**
      * Returns the current width of this line, calculated by add up the width and the margin of all images of this line.
      * This is not the width specified in the config.yml.
+     * @throws InvalidConfigurationException
      * @return float
      */
     public function getWidth() : float {
@@ -116,6 +140,7 @@ class ImageLine extends ViewableData {
     /**
      * Returns the height of this line, calculated by searching for the highest image.
      * This line height includes the margin, if any.
+     * @throws InvalidConfigurationException
      * @return float
      */
     public function getHeight() : float {
@@ -130,6 +155,7 @@ class ImageLine extends ViewableData {
 
     /**
      * Returns the sum of the margins of all images of this line.
+     * @throws InvalidConfigurationException
      * @return int
      */
     public function getAllImagesRightMargin() : int {
@@ -143,19 +169,23 @@ class ImageLine extends ViewableData {
     /**
      * Match the images to the line, so that the complete space of the line is used and the height of all images is equal afterwards.
      * The space is specified by $this->getOptimizedWidth().
+     * @throws InvalidConfigurationException
      * @see getOptimizedWidth()
      */
     public function match() {
-        $resizeFactor = (static::getOptimizedWidth() - $this->getAllImagesRightMargin()) / $this->getWidthWithoutMargin();
-        foreach ($this->images as $image) {
-            /** @var GalleryImage $image */
-            $image->scale($resizeFactor);
+        if (!$this->isEmpty()) {
+            $resizeFactor = (static::getOptimizedWidth() - $this->getAllImagesRightMargin()) / $this->getWidthWithoutMargin();
+            foreach ($this->images as $image) {
+                /** @var GalleryImage $image */
+                $image->scale($resizeFactor);
+            }
         }
     }
 
     /**
      * Returns the deviation to the desired height specified by $this->getDesiredHeight().
      * @see getDesiredHeight()
+     * @throws InvalidConfigurationException
      * @return float
      */
     public function getBiasFromDesiredHeight() : float {
@@ -188,6 +218,7 @@ class ImageLine extends ViewableData {
      * This function is called when this object should be rendered to a template.
      * Additionally this function calculates the width of the images of this line in percent for responsive purposes.
      * This function also determines if the images of this line should have margin at the top or not.
+     * @throws InvalidConfigurationException
      * @return \SilverStripe\ORM\FieldType\DBHTMLText
      */
     public function forTemplate() {

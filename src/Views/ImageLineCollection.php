@@ -61,6 +61,7 @@ class ImageLineCollection extends ViewableData {
      * There are two algorithms (modes):
      *  - avg (This keeps attention on the average difference to the desired height)
      *  - max (This searches for the maximum difference to the desired height of a line and takes this to fi[nd the best order. This mode better prevents very large lines.)
+     * @throws \PaulSchulz\SilverStripe\Gallery\Exceptions\InvalidConfigurationException
      * @return float
      */
     public function getBias() : float {

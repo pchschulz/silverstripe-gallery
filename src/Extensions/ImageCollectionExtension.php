@@ -47,6 +47,7 @@ class ImageCollectionExtension extends DataExtension {
      * This function returns the images with the best combination of lines, calculated by findBestImageOrder().
      * This function automatically sorts the images.
      * @see findBestImageOrder()
+     * @throws \PaulSchulz\SilverStripe\Gallery\Exceptions\InvalidConfigurationException
      * @return ImageLineCollection
      */
     public function AdjustImages() : ImageLineCollection {
@@ -70,6 +71,7 @@ class ImageCollectionExtension extends DataExtension {
      *  - max (This searches for the maximum difference to the desired height of a line and takes this to find the best order. This mode better prevents very large lines.)
      * @param SS_List $images
      * @param bool $firstCall
+     * @throws \PaulSchulz\SilverStripe\Gallery\Exceptions\InvalidConfigurationException
      * @return ImageLineCollection
      */
     public function findBestImageOrder(SS_List $images, bool $firstCall = true) : ImageLineCollection {

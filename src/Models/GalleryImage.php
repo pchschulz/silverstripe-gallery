@@ -2,6 +2,7 @@
 
 namespace PaulSchulz\SilverStripe\Gallery\Models;
 
+use PaulSchulz\SilverStripe\Gallery\Exceptions\InvalidConfigurationException;
 use PaulSchulz\SilverStripe\Gallery\Views\ImageLine;
 use SilverStripe\Assets\Image;
 use SilverStripe\ORM\FieldType\DBHTMLText;
@@ -35,10 +36,19 @@ class GalleryImage extends Image {
     /**
      * Returns the margin of an image. The margin is applied on the top and at the right of the image.
      * This margin can be set in config.yml.
+     * @throws InvalidConfigurationException
      * @return int
      */
     public static function getMargin() : int {
-        return self::config()->get('margin');
+        $margin = self::config()->get('margin');
+        if ($margin < 0) {
+            throw new InvalidConfigurationException('A negative margin is no allowed.');
+        }
+        if ((int) $margin != $margin) {
+            throw new InvalidConfigurationException('Decimals as a value for the optimized width are not allowed.');
+        }
+
+        return $margin;
     }
 
     /**
@@ -155,6 +165,7 @@ class GalleryImage extends Image {
 
     /**
      * Returns the margin of this image of percent of the width of one image line.
+     * @throws InvalidConfigurationException
      * @return float
      */
     public static function getPercentageMargin() : float {
