@@ -14,11 +14,14 @@ use SilverStripe\View\ViewableData;
  */
 class ImageLine extends ViewableData {
     /**
+     * All images of this line.
      * @var ArrayList
      */
     private $images;
 
     /**
+     * This is set to true, if this line is the first line in an image line collection.
+     * This is necessary, because the first line in a gallery should not have margin at the top applied.
      * @var bool
      */
     private $firstLine;

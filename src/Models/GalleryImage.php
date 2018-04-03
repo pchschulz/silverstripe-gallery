@@ -21,16 +21,22 @@ class GalleryImage extends Image {
     protected $scale = 1;
 
     /**
+     * The width of this image in percentage of the width of the image line this image is contained in.
+     * This property is only set, when this object is rendered to a template, so when forTemplate() of the ImageLine class is called.
      * @var float
      */
     protected $percentageWidth;
 
     /**
+     * Determines if this image is rendered with margin at the top or not.
+     * This property is only set, when this object is rendered to a template, so when forTemplate() of the ImageLine class is called.
      * @var bool
      */
     protected $hasMarginTop = true;
 
     /**
+     * Determines if this image is rendered with margin at the right or not.
+     * This property is only set, when this object is rendered to a template, so when forTemplate() of the ImageLine class is called.
      * @var bool
      */
     protected $hasMarginRight = true;

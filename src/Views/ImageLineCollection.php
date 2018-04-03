@@ -12,11 +12,15 @@ use SilverStripe\View\ViewableData;
  */
 class ImageLineCollection extends ViewableData {
     /**
+     * All lines in this image line collection.
      * @var ArrayList
      */
     protected $lines;
 
     /**
+     * The mode (algorithm) the deviation of the image lines between the desired line height and the actual line height is calculated with.
+     * For details see getBias().
+     * @see getBias()
      * @var string
      */
     protected $biasMode;
@@ -60,7 +64,7 @@ class ImageLineCollection extends ViewableData {
      * This function calculates the deviation to the desired height of all lines of this collection.
      * There are two algorithms (modes):
      *  - avg (This keeps attention on the average difference to the desired height)
-     *  - max (This searches for the maximum difference to the desired height of a line and takes this to fi[nd the best order. This mode better prevents very large lines.)
+     *  - max (This searches for the maximum difference to the desired height of a line and takes this to find the best order. This mode better prevents very large lines.)
      * @throws \PaulSchulz\SilverStripe\Gallery\Exceptions\InvalidConfigurationException
      * @return float
      */
