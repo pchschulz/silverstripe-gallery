@@ -8,7 +8,9 @@ use SilverStripe\Assets\Image;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 
 /**
- * Class GalleryImage
+ * This class represents an image of an image collection or a gallery.
+ * All operations done on this object, like setScaleByWidth(), are not applied to the underlying image.
+ * Instead $this->scale is changed, to just calculate the dimensions of this image for performance reasons.
  * @package PaulSchulz\SilverStripe\GalleryExtension\Models
  */
 class GalleryImage extends Image {

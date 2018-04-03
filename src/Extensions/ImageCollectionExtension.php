@@ -14,8 +14,12 @@ use SilverStripe\ORM\SS_List;
 use SilverStripe\View\ArrayData;
 
 /**
- * Class ImageCollectionExtension
+ * This extension is responsible for creating the appearance of the gallery.
+ * It can be applied to any DataObject, to support listing of images.
+ * This extension only provides support for listing the images of a gallery. For a more advanced gallery see the subclass GalleryExtension.
+ * When applied to a DataObject the cms fields must be created by the object itself. This class does not create any cms fields.
  * @package PaulSchulz\SilverStripe\GalleryExtension\Models
+ * @see GalleryExtension
  * @property string BiasMode
  * @property ImageCollectionExtension|DataObject owner
  * @method ManyManyList Images

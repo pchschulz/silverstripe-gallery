@@ -4,7 +4,8 @@ namespace PaulSchulz\SilverStripe\Gallery\Extensions;
 use SilverStripe\ORM\DataObject;
 
 /**
- * Class GalleryExtension
+ * This is the extension for creating a gallery with more information like location and description.
+ * This extension is also applied to GalleryPage.
  * @package PaulSchulz\SilverStripe\GalleryExtension\Models
  * @property string Title
  * @property string Date

@@ -4,7 +4,7 @@ namespace PaulSchulz\SilverStripe\Gallery\Pages;
 use SilverStripe\CMS\Model\SiteTree;
 
 /**
- * Class GalleryHolder
+ * This is the holder class for gallery pages.
  * @package PaulSchulz\SilverStripe\GalleryExtension\Pages
  */
 class GalleryHolder extends \Page {

@@ -8,7 +8,8 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ViewableData;
 
 /**
- * Class ImageLine
+ * This class represents an image line in an image collection.
+ * It contains a list of images which are rendered to one line in the template.
  * @package PaulSchulz\SilverStripe\GalleryExtension\Views
  */
 class ImageLine extends ViewableData {

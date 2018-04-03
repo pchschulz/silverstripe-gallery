@@ -11,7 +11,7 @@ use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TextField;
 
 /**
- * Class GalleryPage
+ * This is a page representing a gallery. The GalleryExtension is applied to this class.
  * @package PaulSchulz\SilverStripe\Gallery\Pages
  * @mixin GalleryExtension
  */
