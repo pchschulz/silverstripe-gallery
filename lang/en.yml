@@ -1,0 +1,30 @@
+en:
+  PaulSchulz\SilverStripe\Gallery\Pages\GalleryHolder:
+    SINGULARNAME: 'Gallery overview page'
+    PLURALNAME: 'Gallery overview pages'
+    PLURALS:
+      one: 'A gallery overview page'
+      other: '{count} gallery overview pages'
+    DESCRIPTION: 'A overview page for all subordinated galleries.'
+    SHOW_GALLERY_TOOLTIP: 'To gallery page'
+  PaulSchulz\SilverStripe\Gallery\Pages\GalleryPage:
+    SINGULARNAME: 'Gallery page'
+    PLURALNAME: 'Gallery page'
+    PLURALS:
+      one: 'A gallery page'
+      other: '{count} gallery pages'
+    DESCRIPTION: 'A page which shows images in a nice form'
+    GALLERY_TAB: 'Galerie'
+  PaulSchulz\SilverStripe\Gallery\Extensions\ImageCollectionExtension:
+    db_BiasMode: 'Bias mode'
+    many_many_Images: 'Images'
+    BIAS_MODE_EXPLANATION: 'The "Bias mode" determines how the deviation from the desired line height is determined.'
+    BIAS_MODE_EXPLANATION_AVG: 'The average bias of all lines (The height of the rows sticks mostly closer to the desired height. Mostly the preferred option)'
+    BIAS_MODE_EXPLANATION_MAX: 'The greatest deviation of all lines (Better prevents too height lines)'
+  PaulSchulz\SilverStripe\Gallery\Extensions\GalleryExtension:
+    db_Title: 'Title'
+    db_Date: 'Date'
+    db_Location: 'Location'
+    db_Content: 'Content'
+  PaulSchulz\SilverStripe\Gallery\Models\GalleryImage:
+      TOOLTIP: 'Show image'
