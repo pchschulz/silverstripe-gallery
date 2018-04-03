@@ -19,7 +19,7 @@ class GalleryHolder extends \Page {
      * This function is necessary, because the children should not be shown in the menus.
      * @return \SilverStripe\ORM\ArrayList
      */
-    public function ShowGalleries() {
+    public function ShownGalleries() {
         return $this->AllChildren()->filterByCallback(function(SiteTree $page) {
             return $page->canView();
         });
