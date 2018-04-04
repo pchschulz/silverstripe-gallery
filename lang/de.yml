@@ -14,10 +14,10 @@ de:
       one: 'Eine Galerieseite'
       other: '{count} Galerieseiten'
     DESCRIPTION: 'Eine Seite in der Bilder in schöner Form angezeigt werden'
-    GALLERY_TAB: 'Galerie'
   PaulSchulz\SilverStripe\Gallery\Extensions\ImageCollectionExtension:
     db_BiasMode: 'Größenveränderungsmodus'
     many_many_Images: 'Bilder'
+    GALLERY_TAB: 'Galerie'
     BIAS_MODE_EXPLANATION: 'Der Größenveränderungsmodus legt fest wie die Abweichung von der gewollten Zeilenhöhe bestimmt wird.'
     BIAS_MODE_EXPLANATION_AVG: 'Der Durschnitt der Abweichungen aller Zeilen (Die Zeilen sind meistens näher an der gewünschten Höhe. Meistens die bessere Wahl.)'
     BIAS_MODE_EXPLANATION_MAX: 'Die Maximale Abweichung aller Zeilen (Verhindert zu große Zeilen)'

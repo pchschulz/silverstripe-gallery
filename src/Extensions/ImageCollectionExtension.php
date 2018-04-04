@@ -2,9 +2,13 @@
 
 namespace PaulSchulz\SilverStripe\Gallery\Extensions;
 
+use Bummzack\SortableFile\Forms\SortableUploadField;
 use PaulSchulz\SilverStripe\Gallery\Models\GalleryImage;
 use PaulSchulz\SilverStripe\Gallery\Views\ImageLine;
 use PaulSchulz\SilverStripe\Gallery\Views\ImageLineCollection;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Tab;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
@@ -145,6 +149,27 @@ class ImageCollectionExtension extends DataExtension {
         //return the current line if no more images left
         $line->match();
         return new ImageLineCollection(new ArrayList([$line]), $this->owner->BiasMode);
+    }
+
+    /**
+     * Updates the cms fields in $fields.
+     * This function add all field to a tab named 'Gallery'.
+     * Adds a dropdown field for choosing the bias mode.
+     * Adds a sortable upload field for uploading and sorting the images of this image collection.
+     * @param FieldList $fields
+     */
+    public function updateCMSFields(FieldList $fields) {
+        if (!$fields->fieldByName('Root.Gallery')) {
+            $fields->addFieldToTab('Root', new Tab('Gallery', _t(self::class . '.GALLERY_TAB', 'Gallery')));
+        }
+
+        $fields->addFieldsToTab('Root.Gallery', [
+            DropdownField::create('BiasMode', _t(self::class . '.db_BiasMode', 'Bias mode'), $this->owner->dbObject('BiasMode')->enumValues())
+                ->setDescription($this->getBiasModeDescription()),
+            SortableUploadField::create('Images', _t(self::class . '.many_many_Images', 'Images'))
+                ->setSortColumn('Sort')
+                ->setFolderName('galleries')
+        ]);
     }
 
     /**

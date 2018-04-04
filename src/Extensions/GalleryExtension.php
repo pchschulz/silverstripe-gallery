@@ -1,6 +1,9 @@
 <?php
 
 namespace PaulSchulz\SilverStripe\Gallery\Extensions;
+use SilverStripe\Forms\DateField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 
 /**
@@ -27,5 +30,19 @@ class GalleryExtension extends ImageCollectionExtension {
      */
     public function PreviewImage() : DataObject {
         return $this->owner->SortedImages()->first();
+    }
+
+    /**
+     * Updates the cms field in $fields.
+     * Adds a date field and a field for the location to the gallery tab created by updateCMSFields in ImageCollectionExtension.
+     * @param FieldList $fields
+     */
+    public function updateCMSFields(FieldList $fields) {
+        parent::updateCMSFields($fields);
+
+        $fields->addFieldsToTab('Root.Gallery', [
+            new DateField('Date', _t(self::class . '.db_Date', 'Date')),
+            new TextField('Location', _t(self::class . '.db_Location', 'Location')),
+        ], 'BiasMode');
     }
 }

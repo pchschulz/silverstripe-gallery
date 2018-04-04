@@ -14,10 +14,10 @@ en:
       one: 'A gallery page'
       other: '{count} gallery pages'
     DESCRIPTION: 'A page which shows images in a nice form'
-    GALLERY_TAB: 'Galerie'
   PaulSchulz\SilverStripe\Gallery\Extensions\ImageCollectionExtension:
     db_BiasMode: 'Bias mode'
     many_many_Images: 'Images'
+    GALLERY_TAB: 'Gallery'
     BIAS_MODE_EXPLANATION: 'The "Bias mode" determines how the deviation from the desired line height is determined.'
     BIAS_MODE_EXPLANATION_AVG: 'The average bias of all lines (The height of the rows sticks mostly closer to the desired height. Mostly the preferred option)'
     BIAS_MODE_EXPLANATION_MAX: 'The greatest deviation of all lines (Better prevents too height lines)'
