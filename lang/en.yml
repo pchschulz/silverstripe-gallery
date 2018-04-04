@@ -5,7 +5,7 @@ en:
     PLURALS:
       one: 'A gallery overview page'
       other: '{count} gallery overview pages'
-    DESCRIPTION: 'A overview page for all subordinated galleries.'
+    DESCRIPTION: 'An overview page for all subordinated galleries'
     SHOW_GALLERY_TOOLTIP: 'To gallery page'
   PaulSchulz\SilverStripe\Gallery\Pages\GalleryPage:
     SINGULARNAME: 'Gallery page'

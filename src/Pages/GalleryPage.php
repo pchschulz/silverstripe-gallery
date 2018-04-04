@@ -15,4 +15,6 @@ class GalleryPage extends \Page {
     private static $defaults = [
         'ShowInMenus' => false
     ];
+
+    private static $description = 'A page which shows images in a nice form';
 }

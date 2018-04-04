@@ -14,6 +14,8 @@ class GalleryHolder extends \Page {
         GalleryPage::class
     ];
 
+    private static $description = 'An overview page for all subordinated galleries.';
+
     /**
      * Returns all children of this page, which the user can view.
      * This function is necessary, because the children should not be shown in the menus.
