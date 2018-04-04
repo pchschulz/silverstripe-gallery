@@ -1,6 +1,11 @@
 @import "../modules/all";
 
 .image-collection {
+  * {
+    margin: 0;
+    padding: 0;
+  }
+
   .image-line {
     @extend %cf;
 

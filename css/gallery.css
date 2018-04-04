@@ -21,6 +21,9 @@
   height: 0;
   visibility: hidden; }
 
+.image-collection * {
+  margin: 0;
+  padding: 0; }
 .image-collection .image-line > a {
   display: block;
   float: left; }
