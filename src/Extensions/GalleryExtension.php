@@ -26,9 +26,9 @@ class GalleryExtension extends ImageCollectionExtension {
 
     /**
      * Returns a preview image for this gallery. This is the first image of all images, which are sorted.
-     * @return DataObject
+     * @return DataObject|null
      */
-    public function PreviewImage() : DataObject {
+    public function PreviewImage() {
         return $this->owner->SortedImages()->first();
     }
 
