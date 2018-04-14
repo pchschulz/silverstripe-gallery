@@ -7,6 +7,13 @@
     "gallery",
     "images"
   ],
+  "authors": [
+    {
+      "name": "Paul Schulz",
+      "email": "pchschulz@gmail.com",
+      "role": "Developer"
+    }
+  ],
   "require": {
     "php": ">=7.0",
     "silverstripe/recipe-core": "^1.1",
