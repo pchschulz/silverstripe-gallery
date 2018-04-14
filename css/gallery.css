@@ -14,13 +14,6 @@
       display: block;
       width: 100%; }
 
-.galleries ul::after, .image-collection .image-line::after {
-  display: block;
-  content: "";
-  clear: both;
-  height: 0;
-  visibility: hidden; }
-
 .image-collection * {
   margin: 0;
   padding: 0; }
