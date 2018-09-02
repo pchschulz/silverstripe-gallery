@@ -163,6 +163,9 @@ class ImageCollectionExtension extends DataExtension {
             $fields->addFieldToTab('Root', new Tab('Gallery', _t(self::class . '.GALLERY_TAB', 'Gallery')));
         }
 
+        //remove default Images tab
+        $fields->removeByName('Images');
+
         $fields->addFieldsToTab('Root.Gallery', [
             DropdownField::create('BiasMode', _t(self::class . '.db_BiasMode', 'Bias mode'), $this->owner->dbObject('BiasMode')->enumValues())
                 ->setDescription($this->getBiasModeDescription()),
