@@ -1,7 +1,8 @@
 ---
-Name: extensions
+Name: silverstripe-gallery-extensions
 Before:
   - 'mysite/\*'
+  - 'app/\*'
 ---
 PaulSchulz\SilverStripe\Gallery\Pages\GalleryPage:
   extensions:

@@ -2,6 +2,7 @@
 Name: silverstripe-gallery
 Before:
   - 'mysite/\*'
+  - 'app/\*'
 ---
 PaulSchulz\SilverStripe\Gallery\Views\ImageLine:
   optimized_width: 1920
