@@ -14,6 +14,10 @@ Or choose the GalleryExtension when you want a "real" image gallery, as the Gall
 ## Adding the extension ##
 Just add the extension to your DataObject in your _.yml_ files or directly in your PHP code.
 
+## Configuration ##
+You have to set set configuration value _optimized_width_ and _desired_height_ for each class that uses one of these extensions.
+See [Configuration](configuration.md) for details.
+
 ## CMS fields ##
 Both extensions add a tab named 'Gallery' to the cms fields.  
 ImageCollectionExtension adds the following cms fields:

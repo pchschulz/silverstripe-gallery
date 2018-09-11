@@ -3,7 +3,7 @@ Configuration are the values you set in your _.yml_ files or directly in your PH
 This describes the configuration values you can set sorted by classes.  
 For an example see the _config.yml_, which contains the default values.
 
-## ImageLine ##
+## Any class implementing ImageCollectionExtension or GalleryExtension ##
  - _optimized_width_ (default: 1920)  
  This is the width an image line (one line in a gallery with images) is optimized for in the PHP code.
  - _desired_height_ (default: 200)

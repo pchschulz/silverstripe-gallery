@@ -3,9 +3,12 @@
 namespace PaulSchulz\SilverStripe\Gallery\Extensions;
 
 use Bummzack\SortableFile\Forms\SortableUploadField;
+use PaulSchulz\SilverStripe\Gallery\Exceptions\IllegalOwnerException;
+use PaulSchulz\SilverStripe\Gallery\Exceptions\InvalidConfigurationException;
 use PaulSchulz\SilverStripe\Gallery\Models\GalleryImage;
 use PaulSchulz\SilverStripe\Gallery\Views\ImageLine;
 use PaulSchulz\SilverStripe\Gallery\Views\ImageLineCollection;
+use SilverStripe\Core\Config\Config_ForClass;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Tab;
@@ -44,6 +47,68 @@ class ImageCollectionExtension extends DataExtension {
     ];
 
     /**
+     * This function returns a Config object for the owner of this class.
+     * @return Config_ForClass
+     * @throws IllegalOwnerException Thrown if this class does not use the Configurable trait.
+     */
+    protected function getOwnerConfig() : Config_ForClass {
+        $ownerClass = get_class($this->owner);
+
+        //ensure the owner class uses the Configurable trait
+        //use method_exists, because instanceof does not work
+        if (method_exists($ownerClass, 'config')) {
+            $config = $ownerClass::config();
+            if ($config instanceof Config_ForClass) {
+                return $config;
+            }
+        }
+
+        throw new IllegalOwnerException('The class ' . $ownerClass . ' does not use the SilverStripe\Core\Config\Configurable trait.');
+    }
+
+    /**
+     * Returns the desired height a line should have. The actually height can be slightly different through the calculation process.
+     * This height can be specified in the config.yml.
+     * @return int
+     * @throws IllegalOwnerException
+     * @throws InvalidConfigurationException
+     */
+    public function getDesiredHeight() : int {
+        $desiredHeight = $this->getOwnerConfig()->get('desired_height');
+        if ($desiredHeight <= 0) {
+            throw new InvalidConfigurationException('The desired height must be greater or equal to 0.');
+        }
+        if ((int) $desiredHeight != $desiredHeight) {
+            throw new InvalidConfigurationException('Decimals as a value for the desired height are not allowed.');
+        }
+
+        return $desiredHeight;
+    }
+
+    /**
+     * Returns the optimized width a line has.
+     * This width can be specified in the config.yml.
+     * @return int
+     * @throws IllegalOwnerException
+     * @throws InvalidConfigurationException
+     */
+    public function getOptimizedWidth() : int {
+        $optimizedWidth = $this->getOwnerConfig()->get('optimized_width');
+
+        if ($optimizedWidth <= 0) {
+            throw new InvalidConfigurationException('The optimized width must be greater or equal to 0.');
+        }
+        if ($optimizedWidth < GalleryImage::getMargin()) {
+            throw new InvalidConfigurationException('The optimized width must be greater or equal to the configured margin of a gallery image.');
+        }
+        if ((int) $optimizedWidth != $optimizedWidth) {
+            throw new InvalidConfigurationException('Decimals as a value for the optimized width are not allowed.');
+        }
+
+        return $optimizedWidth;
+    }
+
+    /**
      * Returns the images in the correct order specified by the Sort int.
      * @return DataList
      */
@@ -55,6 +120,7 @@ class ImageCollectionExtension extends DataExtension {
      * This function returns the images with the best combination of lines, calculated by findBestImageOrder().
      * This function automatically sorts the images.
      * @see findBestImageOrder()
+     * @throws \PaulSchulz\SilverStripe\Gallery\Exceptions\IllegalOwnerException
      * @throws \PaulSchulz\SilverStripe\Gallery\Exceptions\InvalidConfigurationException
      * @return ImageLineCollection
      */
@@ -64,7 +130,7 @@ class ImageCollectionExtension extends DataExtension {
         //put all images to the desired height
         foreach ($images as $image) {
             /** @var GalleryImage $image */
-            $image->setScaleByHeight(ImageLine::getDesiredHeight());
+            $image->setScaleByHeight($this->getDesiredHeight());
         }
 
         return $this->owner->findBestImageOrder(new ArrayList($images->toArray()));
@@ -79,6 +145,7 @@ class ImageCollectionExtension extends DataExtension {
      *  - max (This searches for the maximum difference to the desired height of a line and takes this to find the best order. This mode better prevents very large lines.)
      * @param SS_List $images
      * @param bool $firstCall
+     * @throws \PaulSchulz\SilverStripe\Gallery\Exceptions\IllegalOwnerException
      * @throws \PaulSchulz\SilverStripe\Gallery\Exceptions\InvalidConfigurationException
      * @return ImageLineCollection
      */
@@ -89,7 +156,7 @@ class ImageCollectionExtension extends DataExtension {
         }
 
         //an ImageLine object is created and is filled with images until it is full (hasEnoughSpace() return false)
-        $line = new ImageLine($firstCall);
+        $line = new ImageLine($this->getDesiredHeight(), $this->getOptimizedWidth(), $firstCall);
         foreach ($images as $image) {
             /** @var GalleryImage $image */
             if (!$line->hasEnoughSpace($image)) {

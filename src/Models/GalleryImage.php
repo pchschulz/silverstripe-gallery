@@ -2,8 +2,9 @@
 
 namespace PaulSchulz\SilverStripe\Gallery\Models;
 
+use InvalidArgumentException;
+use PaulSchulz\SilverStripe\Gallery\Exceptions\IllegalStateException;
 use PaulSchulz\SilverStripe\Gallery\Exceptions\InvalidConfigurationException;
-use PaulSchulz\SilverStripe\Gallery\Views\ImageLine;
 use SilverStripe\Assets\Image;
 use SilverStripe\ORM\FieldType\DBHTMLText;
 
@@ -21,11 +22,11 @@ class GalleryImage extends Image {
     protected $scale = 1;
 
     /**
-     * The width of this image in percentage of the width of the image line this image is contained in.
+     * The width of the image line this image is wrapped in.
      * This property is only set, when this object is rendered to a template, so when forTemplate() of the ImageLine class is called.
-     * @var float
+     * @var int
      */
-    protected $percentageWidth;
+    protected $lineWidth = 0;
 
     /**
      * Determines if this image is rendered with margin at the top or not.
@@ -60,16 +61,15 @@ class GalleryImage extends Image {
     }
 
     /**
-     * Sets the width of this image in percentage of the line, which contains this image.
-     * This function does not touch the real image. It just sets $this->scale, for calculation reasons.
-     * @param float $percentageWidth
+     * Sets the line width for the
+     * @param $lineWidth
      */
-    public function setPercentageWidth(float $percentageWidth) {
-        if ($percentageWidth < 0) {
-            throw new \InvalidArgumentException('A negative image width is not allowed.');
+    public function setLineWidth($lineWidth) {
+        if ($lineWidth <= 0) {
+            throw new InvalidArgumentException('The $lineWidth must be greater or equal to 0.');
         }
 
-        $this->percentageWidth = $percentageWidth;
+        $this->lineWidth = $lineWidth;
     }
 
     /**
@@ -163,21 +163,35 @@ class GalleryImage extends Image {
     }
 
     /**
+     * This function returns the value in $size as percentage of $this->lineWidth.
+     * This is just a helper function for other function in this class.
+     * @param $size
+     * @return float
+     */
+    protected function getPercentageOfLineWidth($size) : float {
+        if ($this->lineWidth === 0) {
+            throw new IllegalStateException('The fields $this->lineWidth must not be 0, when calling this function.');
+        }
+
+        return $size / $this->lineWidth * 100;
+    }
+
+    /**
      * Returns the width in percent of the wrapping line.
      * This property is only set when a line is rendered to a template.
      * @return float
      */
-    public function getPercentageWidth(): float {
-        return $this->percentageWidth;
+    public function getPercentageWidth() : float {
+        return $this->getPercentageOfLineWidth($this->getScaledWidth());
     }
 
     /**
-     * Returns the margin of this image of percent of the width of one image line.
+     * Returns the margin of this image in percent of the width of one image line.
      * @throws InvalidConfigurationException
      * @return float
      */
-    public static function getPercentageMargin() : float {
-        return static::getMargin() / ImageLine::getOptimizedWidth() * 100;
+    public function getPercentageMargin() : float {
+        return $this->getPercentageOfLineWidth(static::getMargin());
     }
 
     /**
