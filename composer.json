@@ -17,8 +17,10 @@
   "license": "BSD-3-Clause",
   "require": {
     "php": ">=7.0",
-    "silverstripe/recipe-core": "^1.1",
+    "silverstripe/framework": "^4.1",
     "silverstripe/cms": "^4.1",
+    "silverstripe/assets": "^1.1",
+    "silverstripe/asset-admin": "^1.1",
     "bummzack/sortablefile": "^2.0"
   },
   "extra": {
