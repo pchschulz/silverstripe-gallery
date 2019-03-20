@@ -46,6 +46,10 @@ class ImageCollectionExtension extends DataExtension {
         ]
     ];
 
+    private static $owns = [
+        'Images'
+    ];
+
     /**
      * This function returns a Config object for the owner of this class.
      * @return Config_ForClass
