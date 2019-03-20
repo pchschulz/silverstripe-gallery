@@ -34,6 +34,8 @@ class ImageLineCollection extends ViewableData {
      * @param string biasMode
      */
     public function __construct(ArrayList $lines, string $biasMode) {
+        parent::__construct();
+
         $this->lines = $lines;
 
         switch ($biasMode) {

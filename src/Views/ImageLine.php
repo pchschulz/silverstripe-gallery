@@ -45,6 +45,8 @@ class ImageLine extends ViewableData {
      * @param bool $firstLine
      */
     public function __construct($desiredHeight, $optimizedWidth, bool $firstLine = false) {
+        parent::__construct();
+
         $this->images = new ArrayList();
         $this->desiredHeight = $desiredHeight;
         $this->optimizedWidth = $optimizedWidth;
