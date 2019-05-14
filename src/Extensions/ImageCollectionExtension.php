@@ -3,12 +3,14 @@
 namespace PaulSchulz\SilverStripe\Gallery\Extensions;
 
 use Bummzack\SortableFile\Forms\SortableUploadField;
+use Couchbase\TermRangeSearchQuery;
 use PaulSchulz\SilverStripe\Gallery\Exceptions\IllegalOwnerException;
 use PaulSchulz\SilverStripe\Gallery\Exceptions\InvalidConfigurationException;
 use PaulSchulz\SilverStripe\Gallery\Models\GalleryImage;
 use PaulSchulz\SilverStripe\Gallery\Views\ImageLine;
 use PaulSchulz\SilverStripe\Gallery\Views\ImageLineCollection;
 use SilverStripe\Core\Config\Config_ForClass;
+use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\Tab;
@@ -27,12 +29,12 @@ use SilverStripe\View\ArrayData;
  * When applied to a DataObject the cms fields must be created by the object itself. This class does not create any cms fields.
  * @package PaulSchulz\SilverStripe\GalleryExtension\Models
  * @see GalleryExtension
- * @property string BiasMode
  * @property ImageCollectionExtension|DataObject owner
  * @method ManyManyList Images
  */
 class ImageCollectionExtension extends DataExtension {
     private static $db = [
+    	'QuickModeActivated' => 'Boolean',
         'BiasMode' => "Enum('avg,max','avg')",
     ];
 
@@ -133,8 +135,39 @@ class ImageCollectionExtension extends DataExtension {
             $image->setScaleByHeight($this->getDesiredHeight());
         }
 
-        return $this->owner->findBestImageOrder(new ArrayList($images->toArray()));
+        $imagesList = new ArrayList($images->toArray());
+        if ($this->owner->QuickModeActivated) {
+        	return $this->findQuickImageOrder($imagesList);
+		}
+
+        return $this->owner->findBestImageOrder($imagesList);
     }
+
+	/**
+	 * Returns an ImageLineCollection with all images, which are put in lines.
+	 * This function is a quick way to align the images across different lines.
+	 * This algorithm does not calculate the perfect combination. Instead it just puts images into lines until it is full.
+	 * This algorithm is much faster.
+	 * @param SS_List $images
+	 * @return ImageLineCollection
+	 * @throws IllegalOwnerException
+	 * @throws InvalidConfigurationException
+	 */
+    public function findQuickImageOrder(SS_List $images) : ImageLineCollection {
+    	$lines = new ArrayList();
+
+    	$firstCall = true;
+    	while ($images->count() !== 0) {
+    		$currentLine = $this->putImagesToLine($images, $firstCall);
+    		$currentLine->match();
+
+    		$lines->push($currentLine);
+
+    		$firstCall = false;
+		}
+
+    	return new ImageLineCollection($lines, $this->owner->BiasMode);
+	}
 
     /**
      * Returns an ImageLineCollection with all images, which are put in lines.
@@ -155,18 +188,7 @@ class ImageCollectionExtension extends DataExtension {
             return new ImageLineCollection(new ArrayList(), $this->owner->BiasMode);
         }
 
-        //an ImageLine object is created and is filled with images until it is full (hasEnoughSpace() return false)
-        $line = new ImageLine($this->getDesiredHeight(), $this->getOptimizedWidth(), $firstCall);
-        foreach ($images as $image) {
-            /** @var GalleryImage $image */
-            if (!$line->hasEnoughSpace($image)) {
-                //if line is full break
-                break;
-            }
-
-            $line->addImage($image);
-            $images->remove($image);
-        }
+        $line = $this->putImagesToLine($images, $firstCall);
 
         /*
          * Now there are two possibilities for the best result for this line:
@@ -218,9 +240,37 @@ class ImageCollectionExtension extends DataExtension {
         return new ImageLineCollection(new ArrayList([$line]), $this->owner->BiasMode);
     }
 
+	/**
+	 * Puts as many images from $images into one line as they can fit into the line.
+	 * One line contain at least on image.
+	 * The images put to a line are removed from $images afterwards.
+	 * @param SS_List $images
+	 * @param bool $firstCall
+	 * @return ImageLine
+	 * @throws IllegalOwnerException
+	 * @throws InvalidConfigurationException
+	 */
+    public function putImagesToLine(SS_List $images, $firstCall = true) {
+		//an ImageLine object is created and is filled with images until it is full (hasEnoughSpace() return false)
+		$line = new ImageLine($this->getDesiredHeight(), $this->getOptimizedWidth(), $firstCall);
+		foreach ($images as $image) {
+			/** @var GalleryImage $image */
+			if (!$line->hasEnoughSpace($image)) {
+				//if line is full break
+				break;
+			}
+
+			$line->addImage($image);
+			$images->remove($image);
+		}
+
+		return $line;
+	}
+
     /**
      * Updates the cms fields in $fields.
      * This function add all field to a tab named 'Gallery'.
+	 * Adds a checkbox for activating the quick mode.
      * Adds a dropdown field for choosing the bias mode.
      * Adds a sortable upload field for uploading and sorting the images of this image collection.
      * @param FieldList $fields
@@ -234,6 +284,8 @@ class ImageCollectionExtension extends DataExtension {
         $fields->removeByName('Images');
 
         $fields->addFieldsToTab('Root.Gallery', [
+        	CheckboxField::create('QuickModeActivated', _t(self::class . '.db_QuickMode', 'Quick mode'))
+				->setDescription(_t(self::class . '.QUICK_MODE_DESCRIPTION', 'The quick mode is not so hard to calculate, so that this mode is fast, but may not provide perfect results.')),
             DropdownField::create('BiasMode', _t(self::class . '.db_BiasMode', 'Bias mode'), $this->owner->dbObject('BiasMode')->enumValues())
                 ->setDescription($this->getBiasModeDescription()),
             SortableUploadField::create('Images', _t(self::class . '.many_many_Images', 'Images'))

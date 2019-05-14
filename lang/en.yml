@@ -16,8 +16,10 @@ en:
     DESCRIPTION: 'A page which shows images in a nice form'
   PaulSchulz\SilverStripe\Gallery\Extensions\ImageCollectionExtension:
     db_BiasMode: 'Bias mode'
+    db_QuickMode: 'Quick mode'
     many_many_Images: 'Images'
     GALLERY_TAB: 'Gallery'
+    QUICK_MODE_DESCRIPTION: 'The quick mode is not so hard to calculate, so that this mode is fast, but may not provide perfect results.'
     BIAS_MODE_EXPLANATION: 'The "Bias mode" determines how the deviation from the desired line height is determined.'
     BIAS_MODE_EXPLANATION_AVG: 'The average bias of all lines (The height of the rows sticks mostly closer to the desired height. Mostly the preferred option)'
     BIAS_MODE_EXPLANATION_MAX: 'The greatest deviation of all lines (Better prevents too height lines)'

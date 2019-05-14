@@ -16,8 +16,10 @@ de:
     DESCRIPTION: 'Eine Seite in der Bilder in schöner Form angezeigt werden'
   PaulSchulz\SilverStripe\Gallery\Extensions\ImageCollectionExtension:
     db_BiasMode: 'Größenveränderungsmodus'
+    db_QuickMode: 'Schneller Modus'
     many_many_Images: 'Bilder'
     GALLERY_TAB: 'Galerie'
+    QUICK_MODE_DESCRIPTION: 'Der schnelle Modus ist nicht so rechenintensiv wie der normale Modus. Dafür entsteht u.U. kein perfektes Ergebnis.'
     BIAS_MODE_EXPLANATION: 'Der Größenveränderungsmodus legt fest wie die Abweichung von der gewollten Zeilenhöhe bestimmt wird.'
     BIAS_MODE_EXPLANATION_AVG: 'Der Durschnitt der Abweichungen aller Zeilen (Die Zeilen sind meistens näher an der gewünschten Höhe. Meistens die bessere Wahl.)'
     BIAS_MODE_EXPLANATION_MAX: 'Die Maximale Abweichung aller Zeilen (Verhindert zu große Zeilen)'
