@@ -9,7 +9,8 @@ A gallery is an image collection including this further information:
  - __Location__ (The place of the images)
  - __Description__ or __Content__
 So use the ImageCollectionExtension when you only want to have images displayed in a nice form.
-Or choose the GalleryExtension when you want a "real" image gallery, as the GalleryPage is.
+Or choose the GalleryExtension when you want a "real" image gallery.  
+For classes deriving from __SiteTree__, please use the SiteTreeGalleryExtension class.
 
 ## Adding the extension ##
 Just add the extension to your DataObject in your _.yml_ files or directly in your PHP code.
