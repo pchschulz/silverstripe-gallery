@@ -2,7 +2,7 @@
 This module provides the possibility to easily add a gallery to any DataObject.  
 Furthermore this module provides an already finished gallery page for adding galleries to the site tree.
 
-![A gallery with images of cities](docs/en/images/gallery.png)
+![A gallery with images of cities](docs/en/images/gallery.jpg)
 
 ## Requirements ##
  - PHP 7.0+

@@ -1,7 +1,7 @@
 # User guide
 This guide only contains information about the already existing gallery page.
 
-![CMS settings of a gallery page](images/gallery-page-cms.png)
+![CMS settings of a gallery page](images/gallery-page-cms.jpg)
 
 ## Adding images to the gallery ##
 1. Go to the gallery page where you want to add some images.
