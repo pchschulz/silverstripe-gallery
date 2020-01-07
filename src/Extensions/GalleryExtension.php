@@ -3,18 +3,14 @@
 namespace PaulSchulz\SilverStripe\Gallery\Extensions;
 use SilverStripe\Forms\DateField;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\HTMLEditor\HTMLEditorField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 
 /**
  * This is the extension for creating a gallery with more information like location and description.
- * This extension is also applied to GalleryPage.
- * @package PaulSchulz\SilverStripe\GalleryExtension\Models
- * @property string Title
- * @property string Date
- * @property string Location
- * @property string Content
- * @property string int
+ *
+ * @package PaulSchulz\SilverStripe\Gallery\Extnsions
  */
 class GalleryExtension extends ImageCollectionExtension {
     private static $db = [
@@ -41,8 +37,10 @@ class GalleryExtension extends ImageCollectionExtension {
         parent::updateCMSFields($fields);
 
         $fields->addFieldsToTab('Root.Gallery', [
+        	new TextField('Title', _t(self::class . '.db_Title', 'Title')),
             new DateField('Date', _t(self::class . '.db_Date', 'Date')),
             new TextField('Location', _t(self::class . '.db_Location', 'Location')),
+			new HTMLEditorField('Content', _t(self::class . '.db_Content', 'Content'))
         ], 'BiasMode');
     }
 }

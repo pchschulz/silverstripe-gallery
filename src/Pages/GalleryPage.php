@@ -2,14 +2,20 @@
 
 namespace PaulSchulz\SilverStripe\Gallery\Pages;
 
-use PaulSchulz\SilverStripe\Gallery\Extensions\GalleryExtension;
+use Page;
+use PaulSchulz\SilverStripe\Gallery\Extensions\SiteTreeGalleryExtension;
 
 /**
  * This is a page representing a gallery. The GalleryExtension is applied to this class.
+ *
  * @package PaulSchulz\SilverStripe\Gallery\Pages
- * @mixin GalleryExtension
+ * @mixin SiteTreeGalleryExtension
  */
-class GalleryPage extends \Page {
+class GalleryPage extends Page {
+	private static $extensions = [
+		SiteTreeGalleryExtension::class,
+	];
+
     private static $table_name = 'GalleryPage';
 
     private static $defaults = [

@@ -1,48 +1,73 @@
 <?php
 
-namespace PaulSchulz\SilverStripe\Gallery\Models;
+namespace PaulSchulz\SilverStripe\Gallery\Views;
 
 use InvalidArgumentException;
 use PaulSchulz\SilverStripe\Gallery\Exceptions\IllegalStateException;
 use PaulSchulz\SilverStripe\Gallery\Exceptions\InvalidConfigurationException;
 use SilverStripe\Assets\Image;
 use SilverStripe\ORM\FieldType\DBHTMLText;
+use SilverStripe\View\ViewableData;
 
 /**
  * This class represents an image of an image collection or a gallery.
  * All operations done on this object, like setScaleByWidth(), are not applied to the underlying image.
  * Instead $this->scale is changed, to just calculate the dimensions of this image for performance reasons.
- * @package PaulSchulz\SilverStripe\GalleryExtension\Models
+ *
+ * @package PaulSchulz\SilverStripe\GalleryExtension\Views
  */
-class GalleryImage extends Image {
+class GalleryImage extends ViewableData {
+	/**
+	 * @var Image $image
+	 */
+	protected $image;
+
     /**
      * The scale factor of this image.
-     * @var float
+     * @var float $scale
      */
     protected $scale = 1;
 
     /**
      * The width of the image line this image is wrapped in.
      * This property is only set, when this object is rendered to a template, so when forTemplate() of the ImageLine class is called.
-     * @var int
+     * @var int $lineWidth
      */
     protected $lineWidth = 0;
 
     /**
      * Determines if this image is rendered with margin at the top or not.
      * This property is only set, when this object is rendered to a template, so when forTemplate() of the ImageLine class is called.
-     * @var bool
+     * @var bool $hasMarginTop
      */
     protected $hasMarginTop = true;
 
     /**
      * Determines if this image is rendered with margin at the right or not.
      * This property is only set, when this object is rendered to a template, so when forTemplate() of the ImageLine class is called.
-     * @var bool
+     * @var bool $hasMarginRight
      */
     protected $hasMarginRight = true;
 
-    /**
+	/**
+	 * GalleryImage constructor.
+	 * @param Image $image
+	 */
+	public function __construct(Image $image) {
+		parent::__construct();
+
+		$this->image = $image;
+	}
+
+	/**
+	 * Returns the underlying image.
+	 * @return Image
+	 */
+	public function getImage(): Image {
+		return $this->image;
+	}
+
+	/**
      * Returns the margin of an image. The margin is applied on the top and at the right of the image.
      * This margin can be set in config.yml.
      * @throws InvalidConfigurationException
@@ -79,10 +104,10 @@ class GalleryImage extends Image {
      */
     public function setScaleByHeight(float $height) {
         if ($height < 0) {
-            throw new \InvalidArgumentException('A negative image height is not allowed.');
+            throw new InvalidArgumentException('A negative image height is not allowed.');
         }
 
-        $this->scale *= $height / ($this->getHeight() * $this->scale);
+        $this->scale *= $height / ($this->image->getHeight() * $this->scale);
     }
 
     /**
@@ -92,10 +117,10 @@ class GalleryImage extends Image {
      */
     public function setScaleByWidth(float $width) {
         if ($width < 0) {
-            throw new \InvalidArgumentException('A negative image width is not allowed.');
+            throw new InvalidArgumentException('A negative image width is not allowed.');
         }
 
-        $this->scale *= $width / ($this->getWidth() * $this->scale);
+        $this->scale *= $width / ($this->image->getWidth() * $this->scale);
     }
 
     /**
@@ -140,7 +165,7 @@ class GalleryImage extends Image {
      */
     public function scale(float $scale) {
         if ($scale < 0) {
-            throw new \InvalidArgumentException('A negative scale factor is not allowed');
+            throw new InvalidArgumentException('A negative scale factor is not allowed');
         }
 
         $this->scale *= $scale;
@@ -151,7 +176,7 @@ class GalleryImage extends Image {
      * @return float
      */
     public function getScaledHeight() : float {
-        return $this->getHeight() * $this->scale;
+        return $this->image->getHeight() * $this->scale;
     }
 
     /**
@@ -159,7 +184,7 @@ class GalleryImage extends Image {
      * @return float
      */
     public function getScaledWidth() : float {
-        return $this->getWidth() * $this->scale;
+        return $this->image->getWidth() * $this->scale;
     }
 
     /**
@@ -196,9 +221,9 @@ class GalleryImage extends Image {
 
     /**
      * This function is called when this object should be rendered to a template.
-     * @return \SilverStripe\ORM\FieldType\DBHTMLText|string
+     * @return DBHTMLText
      */
-    public function forTemplate() : DBHTMLText {
+    public function forTemplate() {
         return $this->renderWith(self::class);
     }
 }

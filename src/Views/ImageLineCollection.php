@@ -8,6 +8,7 @@ use SilverStripe\View\ViewableData;
 
 /**
  * This class represents an image line collection, which is just all lines of an image collection.
+ *
  * @package PaulSchulz\SilverStripe\GalleryExtension\Views
  */
 class ImageLineCollection extends ViewableData {

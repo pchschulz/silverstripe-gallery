@@ -28,5 +28,8 @@ de:
     db_Date: 'Datum'
     db_Location: 'Ort'
     db_Content: 'Inhalt'
+  PaulSchulz\SilverStripe\Gallery\Extensions\SiteTreeGalleryExtension:
+    db_Date: 'Datum'
+    db_Location: 'Ort'
   PaulSchulz\SilverStripe\Gallery\Models\GalleryImage:
       TOOLTIP: 'Bild anzeigen'

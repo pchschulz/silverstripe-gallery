@@ -3,12 +3,12 @@
 namespace PaulSchulz\SilverStripe\Gallery\Extensions;
 
 use Bummzack\SortableFile\Forms\SortableUploadField;
-use Couchbase\TermRangeSearchQuery;
 use PaulSchulz\SilverStripe\Gallery\Exceptions\IllegalOwnerException;
 use PaulSchulz\SilverStripe\Gallery\Exceptions\InvalidConfigurationException;
-use PaulSchulz\SilverStripe\Gallery\Models\GalleryImage;
+use PaulSchulz\SilverStripe\Gallery\Views\GalleryImage;
 use PaulSchulz\SilverStripe\Gallery\Views\ImageLine;
 use PaulSchulz\SilverStripe\Gallery\Views\ImageLineCollection;
+use SilverStripe\Assets\Image;
 use SilverStripe\Core\Config\Config_ForClass;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
@@ -18,6 +18,7 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\ManyManyList;
 use SilverStripe\ORM\SS_List;
 use SilverStripe\View\ArrayData;
@@ -27,6 +28,7 @@ use SilverStripe\View\ArrayData;
  * It can be applied to any DataObject, to support listing of images.
  * This extension only provides support for listing the images of a gallery. For a more advanced gallery see the subclass GalleryExtension.
  * When applied to a DataObject the cms fields must be created by the object itself. This class does not create any cms fields.
+ *
  * @package PaulSchulz\SilverStripe\GalleryExtension\Models
  * @see GalleryExtension
  * @property ImageCollectionExtension|DataObject owner
@@ -39,7 +41,7 @@ class ImageCollectionExtension extends DataExtension {
     ];
 
     private static $many_many = [
-        'Images' => GalleryImage::class
+        'Images' => Image::class
     ];
 
     private static $many_many_extraFields = [
@@ -47,6 +49,10 @@ class ImageCollectionExtension extends DataExtension {
             'Sort' => 'Int'
         ]
     ];
+
+    private static $owns = [
+    	'Images',
+	];
 
     /**
      * This function returns a Config object for the owner of this class.
@@ -118,16 +124,28 @@ class ImageCollectionExtension extends DataExtension {
         return $this->owner->Images()->sort('Sort', 'ASC');
     }
 
+	/**
+	 * Wraps the images of this DataObject into a GalleryImage object for further processing.
+	 * A list with all gallery images is returned.
+	 * @return SS_List
+	 */
+    public function getGalleryImages(): SS_List {
+    	$list = new ArrayList();
+    	foreach ($this->SortedImages() as $image) {
+    		$list->add(new GalleryImage($image));
+		}
+
+    	return $list;
+	}
+
     /**
      * This function returns the images with the best combination of lines, calculated by findBestImageOrder().
      * This function automatically sorts the images.
      * @see findBestImageOrder()
-     * @throws \PaulSchulz\SilverStripe\Gallery\Exceptions\IllegalOwnerException
-     * @throws \PaulSchulz\SilverStripe\Gallery\Exceptions\InvalidConfigurationException
      * @return ImageLineCollection
      */
     public function AdjustImages() : ImageLineCollection {
-        $images = new ArrayList($this->owner->SortedImages()->toArray());
+        $images = $this->owner->getGalleryImages();
 
         //put all images to the desired height
         foreach ($images as $image) {
@@ -150,8 +168,6 @@ class ImageCollectionExtension extends DataExtension {
 	 * This algorithm is much faster.
 	 * @param SS_List $images
 	 * @return ImageLineCollection
-	 * @throws IllegalOwnerException
-	 * @throws InvalidConfigurationException
 	 */
     public function findQuickImageOrder(SS_List $images) : ImageLineCollection {
     	$lines = new ArrayList();
@@ -178,8 +194,6 @@ class ImageCollectionExtension extends DataExtension {
      *  - max (This searches for the maximum difference to the desired height of a line and takes this to find the best order. This mode better prevents very large lines.)
      * @param SS_List $images
      * @param bool $firstCall
-     * @throws \PaulSchulz\SilverStripe\Gallery\Exceptions\IllegalOwnerException
-     * @throws \PaulSchulz\SilverStripe\Gallery\Exceptions\InvalidConfigurationException
      * @return ImageLineCollection
      */
     public function findBestImageOrder(SS_List $images, bool $firstCall = true) : ImageLineCollection {
@@ -247,8 +261,6 @@ class ImageCollectionExtension extends DataExtension {
 	 * @param SS_List $images
 	 * @param bool $firstCall
 	 * @return ImageLine
-	 * @throws IllegalOwnerException
-	 * @throws InvalidConfigurationException
 	 */
     public function putImagesToLine(SS_List $images, $firstCall = true) {
 		//an ImageLine object is created and is filled with images until it is full (hasEnoughSpace() return false)
@@ -296,7 +308,7 @@ class ImageCollectionExtension extends DataExtension {
 
     /**
      * Returns a description for all bias modes. Useful for description of cms fields.
-     * @return \SilverStripe\ORM\FieldType\DBHTMLText
+     * @return DBHTMLText
      */
     public function getBiasModeDescription() {
         $values = new ArrayList();
@@ -323,20 +335,5 @@ class ImageCollectionExtension extends DataExtension {
             'Hint' => _t(self::class . '.BIAS_MODE_EXPLANATION', 'The "Bias mode" determines how the deviation from the desired line height is determined.'),
             'Values' => $values,
         ])->renderWith('PaulSchulz\SilverStripe\Gallery\Extensions\Includes\BiasModeDescription');
-    }
-
-    /**
-     * This function is called after this object was saved.
-     * It publishes all images of this image collection.
-     */
-    public function onAfterWrite() {
-        parent::onAfterWrite();
-
-        foreach ($this->owner->Images() as $image) {
-            /** @var GalleryImage $image */
-            if (!$image->isPublished()) {
-                $image->publishSingle();
-            }
-        }
     }
 }
